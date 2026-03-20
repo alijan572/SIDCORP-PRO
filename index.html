@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
-    <title>SIDCORP — Долги и расходы</title>
+    <title>SIDCORP — ДолгУчет</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <style>
@@ -20,7 +20,6 @@
             color: #e4f5e9;
             padding-bottom: 70px;
         }
-        /* Заставка */
         .splash {
             position: fixed;
             top: 0;
@@ -41,7 +40,6 @@
         .splash-loader { width: 36px; height: 36px; border: 3px solid rgba(46,204,113,0.2); border-top-color: #2ecc71; border-radius: 50%; margin-top: 24px; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        /* PIN экран */
         .pin-screen {
             position: fixed;
             top: 0;
@@ -66,14 +64,13 @@
         .pin-box h3 { font-size: 24px; color: #2ecc71; margin-bottom: 8px; }
         .pin-box p { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 24px; }
         .pin-dots { display: flex; justify-content: center; gap: 20px; margin: 32px 0; }
-        .pin-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.2); transition: all 0.2s; }
+        .pin-dot { width: 18px; height: 18px; border-radius: 50%; background: rgba(255,255,255,0.2); }
         .pin-dot.filled { background: #2ecc71; box-shadow: 0 0 10px #2ecc71; transform: scale(1.1); }
         .pin-keys { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
         .pin-key { background: rgba(255,255,255,0.1); border: none; color: white; font-size: 28px; padding: 16px; border-radius: 60px; cursor: pointer; }
         .pin-key:active { background: #2ecc71; transform: scale(0.95); }
         .pin-clear { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,71,87,0.3); color: #ff6b6b; margin-top: 20px; padding: 12px; border-radius: 40px; width: 100%; font-size: 16px; cursor: pointer; }
 
-        /* Основной интерфейс */
         .container { max-width: 600px; margin: 0 auto; padding: 16px; }
         .header {
             background: rgba(255,255,255,0.05);
@@ -96,7 +93,7 @@
             font-size: 14px;
             margin-bottom: 16px;
         }
-        .sort { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+        .sort { display: flex; gap: 10px; margin-bottom: 16px; }
         .sort-btn {
             background: rgba(255,255,255,0.05);
             border: 1px solid rgba(46,204,113,0.3);
@@ -125,9 +122,7 @@
             justify-content: space-between;
             align-items: center;
             cursor: pointer;
-            transition: 0.1s;
         }
-        .item:active { transform: scale(0.98); }
         .item-name { font-weight: 600; margin-bottom: 4px; }
         .debt-red { color: #ff6b6b; font-weight: 700; }
         .debt-green { color: #2ecc71; font-weight: 700; }
@@ -167,7 +162,6 @@
         .nav-item i { font-size: 22px; display: block; margin-bottom: 4px; }
         .nav-item.active { color: #2ecc71; }
 
-        /* Модалки */
         .modal {
             position: fixed;
             top: 0;
@@ -194,7 +188,7 @@
             max-height: 85vh;
             overflow-y: auto;
         }
-        .type-buttons { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .type-buttons { display: flex; gap: 10px; margin-bottom: 20px; }
         .type-btn {
             flex: 1;
             padding: 10px;
@@ -238,8 +232,8 @@
             padding: 20px;
             margin-bottom: 16px;
         }
-        .stats { display: flex; gap: 12px; margin: 16px 0; flex-wrap: wrap; }
-        .stat-card { background: rgba(46,204,113,0.1); border-radius: 20px; padding: 12px; flex: 1; text-align: center; min-width: 100px; }
+        .stats { display: flex; gap: 12px; margin: 16px 0; }
+        .stat-card { background: rgba(46,204,113,0.1); border-radius: 20px; padding: 12px; flex: 1; text-align: center; }
         .history-item, .expense-item {
             background: rgba(255,255,255,0.05);
             border-radius: 16px;
@@ -372,7 +366,7 @@
         <input type="text" id="modalName" placeholder="Название">
         <input type="number" id="modalAmount" placeholder="Сумма">
         <input type="date" id="modalDate">
-        <textarea id="modalComment" placeholder="Комментарий (треки, товар...)" rows="2"></textarea>
+        <textarea id="modalComment" placeholder="Комментарий" rows="2"></textarea>
         <div class="attach-btn" id="attachPhotoBtn"><i class="fas fa-camera"></i> Прикрепить фото</div>
         <input type="file" id="photoInput" accept="image/*" style="display:none">
         <div id="photoPreview" class="photo-preview"></div>
@@ -388,7 +382,6 @@
 </div>
 
 <script>
-    // ========== ДАННЫЕ ==========
     let suppliers = [];
     let transactions = [];
     let expenses = [];
@@ -449,34 +442,27 @@
             container.innerHTML = list.map(s => {
                 let cls = s.balance > 0 ? "debt-red" : (s.balance < 0 ? "debt-green" : "");
                 let sign = s.balance > 0 ? `+${formatMoney(s.balance)}` : formatMoney(s.balance);
-                return `<div class="item" data-id="${s.id}">
-                            <div><div class="item-name"><strong>${escapeHtml(s.name)}</strong></div><div><small>${s.balance > 0 ? "Я должен" : (s.balance < 0 ? "Должен мне" : "Ноль")}</small></div></div>
-                            <div class="${cls}">${sign}</div>
-                        </div>`;
+                return `<div class="item" data-id="${s.id}"><div><div class="item-name"><strong>${escapeHtml(s.name)}</strong></div><div><small>${s.balance > 0 ? "Я должен" : (s.balance < 0 ? "Должен мне" : "Ноль")}</small></div></div><div class="${cls}">${sign}</div></div>`;
             }).join("");
         }
         document.getElementById("totalDebt").innerHTML = formatMoney(getTotalDebt());
         document.getElementById("totalOwed").innerHTML = formatMoney(getTotalOwed());
-        
         document.querySelectorAll(".item").forEach(el => {
             el.onclick = () => showHistory(el.dataset.id);
-            // долгое нажатие для удаления поставщика
             let timer;
-            el.ontouchstart = () => { timer = setTimeout(() => deleteSupplierConfirm(el.dataset.id), 500); };
+            el.ontouchstart = () => { timer = setTimeout(() => { if(confirm("Удалить поставщика?")) deleteSupplier(el.dataset.id); }, 500); };
             el.ontouchend = () => clearTimeout(timer);
         });
     }
     
-    function deleteSupplierConfirm(id) {
-        if(confirm("Удалить поставщика и все его транзакции?")) {
-            suppliers = suppliers.filter(s => s.id !== id);
-            transactions = transactions.filter(t => t.supplierId !== id);
-            saveAll();
-            recalcBalances();
-            renderMain();
-            renderAnalytics();
-            showToast("🗑 Поставщик удалён");
-        }
+    function deleteSupplier(id) {
+        suppliers = suppliers.filter(s => s.id !== id);
+        transactions = transactions.filter(t => t.supplierId !== id);
+        saveAll();
+        recalcBalances();
+        renderMain();
+        renderAnalytics();
+        showToast("🗑 Поставщик удалён");
     }
     
     function showHistory(supplierId) {
@@ -485,24 +471,12 @@
         let filtered = transactions.filter(t => t.supplierId === supplierId).reverse();
         let modal = document.getElementById("detailModal");
         let content = document.getElementById("detailContent");
-        let html = `<h3>${escapeHtml(supplier.name)}</h3>
-                    <p>Баланс: <strong style="color:#2ecc71">${formatMoney(supplier.balance)}</strong></p>
-                    <button class="btn btn-green" onclick="partialPay('${supplierId}')">💰 Частичное погашение</button>
-                    <h4 style="margin:16px 0 8px;">История операций</h4>`;
+        let html = `<h3>${escapeHtml(supplier.name)}</h3><p>Баланс: <strong style="color:#2ecc71">${formatMoney(supplier.balance)}</strong></p><button class="btn btn-green" onclick="partialPay('${supplierId}')">💰 Частичное погашение</button><h4 style="margin:16px 0 8px;">История</h4>`;
         if(filtered.length === 0) html += "<p>Нет операций</p>";
         else {
             filtered.forEach(t => {
                 let photoHtml = t.photo ? `<div><img src="${t.photo}" class="history-photo"></div>` : '';
-                html += `<div class="history-item">
-                            <div><i class="fas fa-calendar"></i> ${t.date}</div>
-                            <div><strong>${t.type === "debt_me" ? `➕ Взял +${t.amount}` : `➖ Оплатил -${t.amount}`}</strong></div>
-                            <div>${escapeHtml(t.comment) || ""}</div>
-                            ${photoHtml}
-                            <div style="display:flex;gap:8px;margin-top:8px;">
-                                <button class="btn-gray" style="padding:4px 12px;font-size:12px;" onclick="editTrans('${t.id}')"><i class="fas fa-edit"></i></button>
-                                <button class="btn-red" style="padding:4px 12px;font-size:12px;" onclick="delTrans('${t.id}')"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>`;
+                html += `<div class="history-item"><div><i class="fas fa-calendar"></i> ${t.date}</div><div><strong>${t.type === "debt_me" ? `➕ Взял +${t.amount}` : `➖ Оплатил -${t.amount}`}</strong></div><div>${escapeHtml(t.comment) || ""}</div>${photoHtml}<div style="display:flex;gap:8px;margin-top:8px;"><button class="btn-gray" style="padding:4px 12px;font-size:12px;" onclick="editTrans('${t.id}')"><i class="fas fa-edit"></i></button><button class="btn-red" style="padding:4px 12px;font-size:12px;" onclick="delTrans('${t.id}')"><i class="fas fa-trash"></i></button></div></div>`;
             });
         }
         html += `<button class="btn btn-gray" onclick="closeModal()">Закрыть</button>`;
@@ -517,39 +491,19 @@
             supplier = { id: Date.now().toString(), name: name, balance: 0 };
             suppliers.push(supplier);
         }
-        transactions.push({
-            id: Date.now().toString(),
-            supplierId: supplier.id,
-            amount: amount,
-            type: type,
-            date: date || new Date().toISOString().slice(0,10),
-            comment: comment || "",
-            photo: photo || null
-        });
-        saveAll();
-        recalcBalances();
-        renderMain();
-        renderAnalytics();
-        showToast("✅ Добавлено");
+        transactions.push({ id: Date.now().toString(), supplierId: supplier.id, amount: amount, type: type, date: date || new Date().toISOString().slice(0,10), comment: comment || "", photo: photo || null });
+        saveAll(); recalcBalances(); renderMain(); renderAnalytics(); showToast("✅ Добавлено");
     }
     
     function addExpense(amount, comment, date, photo) {
         if(!amount) { showToast("Введите сумму"); return; }
-        expenses.push({
-            id: Date.now().toString(),
-            amount: amount,
-            comment: comment || "",
-            date: date || new Date().toISOString().slice(0,10),
-            photo: photo || null
-        });
-        saveAll();
-        renderExpenses();
-        showToast("💸 Расход добавлен");
+        expenses.push({ id: Date.now().toString(), amount: amount, comment: comment || "", date: date || new Date().toISOString().slice(0,10), photo: photo || null });
+        saveAll(); renderExpenses(); showToast("💸 Расход добавлен");
     }
     
     function partialPay(supplierId) {
         let supplier = suppliers.find(s => s.id === supplierId);
-        if(!supplier || supplier.balance <= 0) { showToast("Нет долга для оплаты"); return; }
+        if(!supplier || supplier.balance <= 0) { showToast("Нет долга"); return; }
         let amount = prompt(`Сумма погашения (макс ${supplier.balance}):`);
         if(amount && !isNaN(parseFloat(amount)) && parseFloat(amount) > 0 && parseFloat(amount) <= supplier.balance) {
             addTransaction(supplier.name, parseFloat(amount), "debt_them", "Погашение", new Date().toISOString().slice(0,10), null);
@@ -560,226 +514,74 @@
         let t = transactions.find(tx => tx.id === id);
         if(!t) return;
         let newAmount = prompt("Новая сумма:", t.amount);
-        if(newAmount && !isNaN(parseFloat(newAmount))) {
-            t.amount = parseFloat(newAmount);
-            saveAll();
-            recalcBalances();
-            renderMain();
-            renderAnalytics();
-            closeModal();
-            showToast("✅ Изменено");
-        }
+        if(newAmount && !isNaN(parseFloat(newAmount))) { t.amount = parseFloat(newAmount); saveAll(); recalcBalances(); renderMain(); renderAnalytics(); closeModal(); showToast("✅ Изменено"); }
     }
     
     function delTrans(id) {
-        if(confirm("Удалить транзакцию?")) {
-            transactions = transactions.filter(t => t.id !== id);
-            saveAll();
-            recalcBalances();
-            renderMain();
-            renderAnalytics();
-            closeModal();
-            showToast("🗑 Удалено");
-        }
+        if(confirm("Удалить транзакцию?")) { transactions = transactions.filter(t => t.id !== id); saveAll(); recalcBalances(); renderMain(); renderAnalytics(); closeModal(); showToast("🗑 Удалено"); }
     }
     
     function renderExpenses() {
-        let today = new Date().toISOString().slice(0,10);
-        let now = new Date();
-        let todayTotal = 0, monthTotal = 0;
-        expenses.forEach(e => {
-            if(e.date === today) todayTotal += e.amount;
-            let d = new Date(e.date);
-            if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) monthTotal += e.amount;
-        });
+        let today = new Date().toISOString().slice(0,10), now = new Date(), todayTotal = 0, monthTotal = 0;
+        expenses.forEach(e => { if(e.date === today) todayTotal += e.amount; let d = new Date(e.date); if(d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()) monthTotal += e.amount; });
         document.getElementById("todayExp").innerHTML = formatMoney(todayTotal);
         document.getElementById("monthExp").innerHTML = formatMoney(monthTotal);
-        
         let container = document.getElementById("expensesList");
         if(expenses.length === 0) container.innerHTML = "<div style='text-align:center;padding:20px;'>Нет расходов</div>";
-        else {
-            container.innerHTML = [...expenses].reverse().map(e => {
-                let photoHtml = e.photo ? `<img src="${e.photo}" style="width:36px;height:36px;object-fit:cover;border-radius:12px;margin-right:8px;">` : '';
-                return `<div class="expense-item"><div style="display:flex;align-items:center;"><div>${photoHtml}</div><div><small>${e.date}</small><br>${escapeHtml(e.comment)}</div></div><strong>${formatMoney(e.amount)}</strong></div>`;
-            }).join("");
-        }
-        
+        else { container.innerHTML = [...expenses].reverse().map(e => `<div class="expense-item"><div><small>${e.date}</small><br>${escapeHtml(e.comment)}</div><strong>${formatMoney(e.amount)}</strong></div>`).join(""); }
         let last7 = [], last7vals = [];
-        for(let i=6; i>=0; i--) {
-            let d = new Date(); d.setDate(d.getDate() - i);
-            let dateStr = d.toISOString().slice(0,10);
-            last7.push(dateStr.slice(5));
-            let sum = expenses.filter(e => e.date === dateStr).reduce((s, e) => s + e.amount, 0);
-            last7vals.push(sum);
-        }
+        for(let i=6; i>=0; i--) { let d = new Date(); d.setDate(d.getDate() - i); let dateStr = d.toISOString().slice(0,10); last7.push(dateStr.slice(5)); let sum = expenses.filter(e => e.date === dateStr).reduce((s, e) => s + e.amount, 0); last7vals.push(sum); }
         let ctx = document.getElementById("expChart")?.getContext("2d");
         if(window.expChart) window.expChart.destroy();
-        if(ctx) {
-            window.expChart = new Chart(ctx, {
-                type: 'line',
-                data: { labels: last7, datasets: [{ label: 'Расходы', data: last7vals, borderColor: '#2ecc71', fill: true, backgroundColor: 'rgba(46,204,113,0.1)' }] },
-                options: { responsive: true, maintainAspectRatio: true }
-            });
-        }
+        if(ctx) { window.expChart = new Chart(ctx, { type: 'line', data: { labels: last7, datasets: [{ label: 'Расходы', data: last7vals, borderColor: '#2ecc71', fill: true, backgroundColor: 'rgba(46,204,113,0.1)' }] }, options: { responsive: true, maintainAspectRatio: true } }); }
     }
     
     function renderAnalytics() {
         document.getElementById("analyticsDebt").innerHTML = formatMoney(getTotalDebt());
         document.getElementById("analyticsOwed").innerHTML = formatMoney(getTotalOwed());
-        
         let myDebts = suppliers.filter(s => s.balance > 0).sort((a,b) => b.balance - a.balance);
         let owedToMe = suppliers.filter(s => s.balance < 0).sort((a,b) => a.balance - b.balance);
         document.getElementById("myDebtsList").innerHTML = myDebts.length ? myDebts.map(s => `<div class="history-item"><span>${escapeHtml(s.name)}</span><span class="debt-red">${formatMoney(s.balance)}</span></div>`).join("") : "<div style='text-align:center; padding:16px;'>Нет долгов</div>";
         document.getElementById("owedList").innerHTML = owedToMe.length ? owedToMe.map(s => `<div class="history-item"><span>${escapeHtml(s.name)}</span><span class="debt-green">${formatMoney(Math.abs(s.balance))}</span></div>`).join("") : "<div style='text-align:center; padding:16px;'>Никто не должен</div>";
-        
         let ctx = document.getElementById("debtChart")?.getContext("2d");
         if(window.debtChart) window.debtChart.destroy();
-        if(ctx && suppliers.length) {
-            let top5 = suppliers.slice(0,5).map(s => ({ name: s.name.slice(0,10), balance: s.balance }));
-            window.debtChart = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: top5.map(s => s.name), datasets: [{ label: 'Баланс', data: top5.map(s => s.balance), backgroundColor: '#2ecc71', borderRadius: 10 }] },
-                options: { responsive: true, maintainAspectRatio: true }
-            });
-        }
+        if(ctx && suppliers.length) { let top5 = suppliers.slice(0,5).map(s => ({ name: s.name.slice(0,10), balance: s.balance })); window.debtChart = new Chart(ctx, { type: 'bar', data: { labels: top5.map(s => s.name), datasets: [{ label: 'Баланс', data: top5.map(s => s.balance), backgroundColor: '#2ecc71', borderRadius: 10 }] }, options: { responsive: true, maintainAspectRatio: true } }); }
     }
     
-    function exportJSON() {
-        let data = { suppliers, transactions, expenses };
-        let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"});
-        let link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `sidcorp_${new Date().toISOString().slice(0,10)}.json`;
-        link.click();
-        showToast("✅ Экспорт JSON");
-    }
-    
-    function exportCSV() {
-        let rows = [["Тип","Контрагент","Сумма","Дата","Коммент"]];
-        transactions.forEach(t => {
-            let sup = suppliers.find(s => s.id === t.supplierId);
-            rows.push([t.type === "debt_me" ? "Долг" : "Оплата", sup?.name, t.amount, t.date, t.comment]);
-        });
-        expenses.forEach(e => rows.push(["Расход", e.comment, e.amount, e.date, ""]));
-        let csv = rows.map(r => r.join(",")).join("\n");
-        let blob = new Blob(["\uFEFF" + csv], {type: "text/csv"});
-        let link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = `sidcorp_export.csv`;
-        link.click();
-        showToast("✅ CSV экспорт");
-    }
-    
-    function importJSON(file) {
-        let reader = new FileReader();
-        reader.onload = function(e) {
-            try {
-                let data = JSON.parse(e.target.result);
-                if(data.suppliers) suppliers = data.suppliers;
-                if(data.transactions) transactions = data.transactions;
-                if(data.expenses) expenses = data.expenses;
-                saveAll();
-                recalcBalances();
-                renderMain();
-                renderAnalytics();
-                renderExpenses();
-                showToast("✅ Восстановлено");
-            } catch(err) { showToast("Ошибка файла"); }
-        };
-        reader.readAsText(file);
-    }
-    
-    function showToast(msg) {
-        let t = document.createElement("div");
-        t.textContent = msg;
-        t.style.cssText = "position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:#000;color:white;padding:8px 20px;border-radius:40px;z-index:9999;font-size:14px;";
-        document.body.appendChild(t);
-        setTimeout(() => t.remove(), 2000);
-    }
-    
-    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, function(m) { return {'&':'&amp;','<':'&lt;','>':'&gt;'}[m] || m; }); }
+    function exportJSON() { let data = { suppliers, transactions, expenses }; let blob = new Blob([JSON.stringify(data, null, 2)], {type: "application/json"}); let link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `sidcorp_${new Date().toISOString().slice(0,10)}.json`; link.click(); showToast("✅ Экспорт JSON"); }
+    function exportCSV() { let rows = [["Тип","Контрагент","Сумма","Дата","Коммент"]]; transactions.forEach(t => { let sup = suppliers.find(s => s.id === t.supplierId); rows.push([t.type === "debt_me" ? "Долг" : "Оплата", sup?.name, t.amount, t.date, t.comment]); }); expenses.forEach(e => rows.push(["Расход", e.comment, e.amount, e.date, ""])); let csv = rows.map(r => r.join(",")).join("\n"); let blob = new Blob(["\uFEFF" + csv], {type: "text/csv"}); let link = document.createElement("a"); link.href = URL.createObjectURL(blob); link.download = `sidcorp_export.csv`; link.click(); showToast("✅ CSV экспорт"); }
+    function importJSON(file) { let reader = new FileReader(); reader.onload = function(e) { try { let data = JSON.parse(e.target.result); if(data.suppliers) suppliers = data.suppliers; if(data.transactions) transactions = data.transactions; if(data.expenses) expenses = data.expenses; saveAll(); recalcBalances(); renderMain(); renderAnalytics(); renderExpenses(); showToast("✅ Восстановлено"); } catch(err) { showToast("Ошибка файла"); } }; reader.readAsText(file); }
+    function showToast(msg) { let t = document.createElement("div"); t.textContent = msg; t.style.cssText = "position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:#000;color:white;padding:8px 20px;border-radius:40px;z-index:9999;font-size:14px;"; document.body.appendChild(t); setTimeout(() => t.remove(), 2000); }
+    function escapeHtml(str) { if(!str) return ''; return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
     function closeModal() { document.querySelectorAll(".modal").forEach(m => m.classList.remove("active")); }
     
-    // ========== PIN-код ==========
     function setupPin() {
         if(!currentPin) {
             let newPin = prompt("🔒 Установите PIN-код (4 цифры):");
-            if(newPin && /^\d{4}$/.test(newPin)) {
-                currentPin = newPin;
-                localStorage.setItem("user_pin", currentPin);
-                showToast("🔒 PIN установлен");
-                showApp();
-            } else if(newPin !== null) {
-                setupPin();
-            } else {
-                showApp();
-            }
-        } else {
-            showPinScreen();
-        }
+            if(newPin && /^\d{4}$/.test(newPin)) { currentPin = newPin; localStorage.setItem("user_pin", currentPin); showToast("🔒 PIN установлен"); showApp(); }
+            else if(newPin !== null) setupPin();
+            else showApp();
+        } else { showPinScreen(); }
     }
-    
     function showPinScreen() {
         document.getElementById("pinScreen").style.display = "flex";
         pendingPin = "";
         updatePinDots();
         let keysDiv = document.getElementById("pinKeys");
         keysDiv.innerHTML = "";
-        for(let i=1; i<=9; i++) {
-            let btn = document.createElement("button");
-            btn.textContent = i;
-            btn.className = "pin-key";
-            btn.onclick = (function(num) { return function() { if(pendingPin.length < 4) { pendingPin += num; updatePinDots(); if(pendingPin.length === 4) checkPin(); } }; })(i);
-            keysDiv.appendChild(btn);
-        }
-        let btn0 = document.createElement("button");
-        btn0.textContent = "0";
-        btn0.className = "pin-key";
-        btn0.onclick = function() { if(pendingPin.length < 4) { pendingPin += "0"; updatePinDots(); if(pendingPin.length === 4) checkPin(); } };
-        keysDiv.appendChild(btn0);
+        for(let i=1; i<=9; i++) { let btn = document.createElement("button"); btn.textContent = i; btn.className = "pin-key"; btn.onclick = (function(num) { return function() { if(pendingPin.length < 4) { pendingPin += num; updatePinDots(); if(pendingPin.length === 4) checkPin(); } }; })(i); keysDiv.appendChild(btn); }
+        let btn0 = document.createElement("button"); btn0.textContent = "0"; btn0.className = "pin-key"; btn0.onclick = function() { if(pendingPin.length < 4) { pendingPin += "0"; updatePinDots(); if(pendingPin.length === 4) checkPin(); } }; keysDiv.appendChild(btn0);
         document.getElementById("pinClearBtn").onclick = function() { pendingPin = ""; updatePinDots(); };
     }
-    
-    function updatePinDots() {
-        let dots = document.querySelectorAll(".pin-dot");
-        for(let i=0; i<dots.length; i++) {
-            if(i < pendingPin.length) dots[i].classList.add("filled");
-            else dots[i].classList.remove("filled");
-        }
-    }
-    
-    function checkPin() {
-        if(pendingPin === currentPin) {
-            document.getElementById("pinScreen").style.display = "none";
-            showApp();
-            showToast("🔓 Добро пожаловать!");
-        } else {
-            showToast("❌ Неверный PIN");
-            pendingPin = "";
-            updatePinDots();
-        }
-    }
-    
+    function updatePinDots() { let dots = document.querySelectorAll(".pin-dot"); for(let i=0; i<dots.length; i++) { if(i < pendingPin.length) dots[i].classList.add("filled"); else dots[i].classList.remove("filled"); } }
+    function checkPin() { if(pendingPin === currentPin) { document.getElementById("pinScreen").style.display = "none"; showApp(); showToast("🔓 Добро пожаловать!"); } else { showToast("❌ Неверный PIN"); pendingPin = ""; updatePinDots(); } }
     function showApp() {
         document.getElementById("app").style.display = "block";
-        loadAll();
-        renderMain();
-        renderAnalytics();
-        renderExpenses();
+        loadAll(); renderMain(); renderAnalytics(); renderExpenses();
         let storedName = localStorage.getItem("username");
-        if(storedName) {
-            currentUser = storedName;
-            document.getElementById("profileName").innerHTML = "<i class='fas fa-user'></i> " + currentUser;
-        } else {
-            let name = prompt("👋 Как вас зовут?", "Друг");
-            if(name) {
-                currentUser = name;
-                localStorage.setItem("username", currentUser);
-                document.getElementById("profileName").innerHTML = "<i class='fas fa-user'></i> " + currentUser;
-            }
-        }
+        if(storedName) { currentUser = storedName; document.getElementById("profileName").innerHTML = "<i class='fas fa-user'></i> " + currentUser; }
+        else { let name = prompt("👋 Как вас зовут?", "Друг"); if(name) { currentUser = name; localStorage.setItem("username", currentUser); document.getElementById("profileName").innerHTML = "<i class='fas fa-user'></i> " + currentUser; } }
     }
-    
     function switchTab(tab) {
         document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
         document.getElementById(tab + "Tab").classList.add("active");
@@ -795,110 +597,26 @@
         document.getElementById("splashGreeting").innerHTML = greeting;
         let storedName = localStorage.getItem("username");
         document.getElementById("splashName").innerHTML = storedName || "Гость";
-        setTimeout(function() {
-            document.getElementById("splash").style.opacity = "0";
-            setTimeout(function() {
-                document.getElementById("splash").style.display = "none";
-                setupPin();
-            }, 500);
-        }, 2000);
+        setTimeout(function() { document.getElementById("splash").style.opacity = "0"; setTimeout(function() { document.getElementById("splash").style.display = "none"; setupPin(); }, 500); }, 2000);
         
-        document.getElementById("currencySelect").addEventListener("change", function(e) {
-            currentCurrency = e.target.value;
-            renderMain();
-            renderAnalytics();
-            renderExpenses();
-        });
-        document.querySelectorAll(".sort-btn").forEach(btn => {
-            btn.onclick = function() {
-                currentSort = this.getAttribute("data-sort");
-                document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active"));
-                this.classList.add("active");
-                renderMain();
-            };
-        });
-        document.getElementById("searchInput").addEventListener("input", function(e) {
-            searchText = e.target.value;
-            renderMain();
-        });
-        
-        document.getElementById("fabBtn").addEventListener("click", function() {
-            document.getElementById("modalName").value = "";
-            document.getElementById("modalAmount").value = "";
-            document.getElementById("modalDate").value = new Date().toISOString().slice(0,10);
-            document.getElementById("modalComment").value = "";
-            currentPhotoData = null;
-            document.getElementById("photoPreview").innerHTML = "";
-            document.querySelectorAll(".type-btn").forEach(btn => btn.classList.remove("selected"));
-            document.querySelector(".type-btn[data-type='debt_me']").classList.add("selected");
-            document.getElementById("modalName").placeholder = "Название поставщика";
-            document.getElementById("addModal").classList.add("active");
-        });
-        document.getElementById("openExpenseBtn").addEventListener("click", function() {
-            document.getElementById("modalName").value = "";
-            document.getElementById("modalAmount").value = "";
-            document.getElementById("modalDate").value = new Date().toISOString().slice(0,10);
-            document.getElementById("modalComment").value = "";
-            currentPhotoData = null;
-            document.getElementById("photoPreview").innerHTML = "";
-            document.querySelectorAll(".type-btn").forEach(btn => btn.classList.remove("selected"));
-            document.querySelector(".type-btn[data-type='expense']").classList.add("selected");
-            document.getElementById("modalName").placeholder = "На что потратил?";
-            document.getElementById("addModal").classList.add("active");
-        });
+        document.getElementById("currencySelect").addEventListener("change", function(e) { currentCurrency = e.target.value; renderMain(); renderAnalytics(); renderExpenses(); });
+        document.querySelectorAll(".sort-btn").forEach(btn => { btn.onclick = function() { currentSort = this.getAttribute("data-sort"); document.querySelectorAll(".sort-btn").forEach(b => b.classList.remove("active")); this.classList.add("active"); renderMain(); }; });
+        document.getElementById("searchInput").addEventListener("input", function(e) { searchText = e.target.value; renderMain(); });
+        document.getElementById("fabBtn").addEventListener("click", function() { document.getElementById("modalName").value = ""; document.getElementById("modalAmount").value = ""; document.getElementById("modalDate").value = new Date().toISOString().slice(0,10); document.getElementById("modalComment").value = ""; currentPhotoData = null; document.getElementById("photoPreview").innerHTML = ""; document.querySelectorAll(".type-btn").forEach(btn => btn.classList.remove("selected")); document.querySelector(".type-btn[data-type='debt_me']").classList.add("selected"); document.getElementById("modalName").placeholder = "Название поставщика"; document.getElementById("addModal").classList.add("active"); });
+        document.getElementById("openExpenseBtn").addEventListener("click", function() { document.getElementById("modalName").value = ""; document.getElementById("modalAmount").value = ""; document.getElementById("modalDate").value = new Date().toISOString().slice(0,10); document.getElementById("modalComment").value = ""; currentPhotoData = null; document.getElementById("photoPreview").innerHTML = ""; document.querySelectorAll(".type-btn").forEach(btn => btn.classList.remove("selected")); document.querySelector(".type-btn[data-type='expense']").classList.add("selected"); document.getElementById("modalName").placeholder = "На что потратил?"; document.getElementById("addModal").classList.add("active"); });
         document.getElementById("attachPhotoBtn").addEventListener("click", () => document.getElementById("photoInput").click());
-        document.getElementById("photoInput").addEventListener("change", (e) => {
-            let file = e.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = (ev) => {
-                    currentPhotoData = ev.target.result;
-                    document.getElementById("photoPreview").innerHTML = `<img src="${currentPhotoData}" style="max-width:100%; max-height:100px; border-radius:12px;">`;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-        document.getElementById("saveModalBtn").addEventListener("click", function() {
-            let name = document.getElementById("modalName").value;
-            let amount = parseFloat(document.getElementById("modalAmount").value);
-            let date = document.getElementById("modalDate").value;
-            let comment = document.getElementById("modalComment").value;
-            let selectedType = document.querySelector(".type-btn.selected")?.getAttribute("data-type");
-            if(!amount || amount <= 0) { showToast("Введите сумму"); return; }
-            if(selectedType === "expense") {
-                addExpense(amount, name || "Расход", date, currentPhotoData);
-            } else {
-                if(!name) { showToast("Введите название"); return; }
-                addTransaction(name, amount, selectedType, comment, date, currentPhotoData);
-            }
-            closeModal();
-        });
+        document.getElementById("photoInput").addEventListener("change", (e) => { let file = e.target.files[0]; if(file) { let reader = new FileReader(); reader.onload = (ev) => { currentPhotoData = ev.target.result; document.getElementById("photoPreview").innerHTML = `<img src="${currentPhotoData}" style="max-width:100%; max-height:100px; border-radius:12px;">`; }; reader.readAsDataURL(file); } });
+        document.getElementById("saveModalBtn").addEventListener("click", function() { let name = document.getElementById("modalName").value; let amount = parseFloat(document.getElementById("modalAmount").value); let date = document.getElementById("modalDate").value; let comment = document.getElementById("modalComment").value; let selectedType = document.querySelector(".type-btn.selected")?.getAttribute("data-type"); if(!amount || amount <= 0) { showToast("Введите сумму"); return; } if(selectedType === "expense") { addExpense(amount, name || "Расход", date, currentPhotoData); } else { if(!name) { showToast("Введите название"); return; } addTransaction(name, amount, selectedType, comment, date, currentPhotoData); } closeModal(); });
         document.getElementById("closeModalBtn").addEventListener("click", closeModal);
-        document.querySelectorAll(".type-btn").forEach(btn => {
-            btn.onclick = function() {
-                document.querySelectorAll(".type-btn").forEach(b => b.classList.remove("selected"));
-                this.classList.add("selected");
-                let placeholder = this.getAttribute("data-type") === "expense" ? "На что потратил?" : "Название поставщика";
-                document.getElementById("modalName").placeholder = placeholder;
-            };
-        });
-        document.querySelectorAll(".nav-item").forEach(item => {
-            item.onclick = function() { switchTab(this.getAttribute("data-tab")); };
-        });
+        document.querySelectorAll(".type-btn").forEach(btn => { btn.onclick = function() { document.querySelectorAll(".type-btn").forEach(b => b.classList.remove("selected")); this.classList.add("selected"); document.getElementById("modalName").placeholder = this.getAttribute("data-type") === "expense" ? "На что потратил?" : "Название поставщика"; }; });
+        document.querySelectorAll(".nav-item").forEach(item => { item.onclick = function() { switchTab(this.getAttribute("data-tab")); }; });
         document.getElementById("exportJsonBtn").addEventListener("click", exportJSON);
         document.getElementById("exportCsvBtn").addEventListener("click", exportCSV);
         document.getElementById("importBtn").addEventListener("click", () => document.getElementById("importFile").click());
         document.getElementById("importFile").addEventListener("change", e => { if(e.target.files[0]) importJSON(e.target.files[0]); });
         document.getElementById("resetBtn").addEventListener("click", () => { if(confirm("Сбросить всё?")) { localStorage.clear(); location.reload(); } });
-        document.getElementById("changeNameBtn").addEventListener("click", () => {
-            let newName = prompt("Новое имя:", currentUser);
-            if(newName) { currentUser = newName; localStorage.setItem("username", currentUser); document.getElementById("profileName").innerHTML = "<i class='fas fa-user'></i> " + currentUser; showToast("✅ Имя изменено"); }
-        });
-        document.getElementById("changePinBtn").addEventListener("click", () => {
-            let newPin = prompt("Новый PIN (4 цифры):");
-            if(newPin && /^\d{4}$/.test(newPin)) { currentPin = newPin; localStorage.setItem("user_pin", currentPin); showToast("🔒 PIN изменен"); }
-            else if(newPin) showToast("PIN должен быть 4 цифры");
-        });
+        document.getElementById("changeNameBtn").addEventListener("click", () => { let newName = prompt("Новое имя:", currentUser); if(newName) { currentUser = newName; localStorage.setItem("username", currentUser); document.getElementById("profileName").innerHTML = "<i class='fas fa-user'></i> " + currentUser; showToast("✅ Имя изменено"); } });
+        document.getElementById("changePinBtn").addEventListener("click", () => { let newPin = prompt("Новый PIN (4 цифры):"); if(newPin && /^\d{4}$/.test(newPin)) { currentPin = newPin; localStorage.setItem("user_pin", currentPin); showToast("🔒 PIN изменен"); } else if(newPin) showToast("PIN должен быть 4 цифры"); });
     });
     
     window.partialPay = partialPay;
